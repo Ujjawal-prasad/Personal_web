@@ -1,0 +1,380 @@
+My Robotics Exploration
+Ujjawal Prasad
+
+Figure 1: SKYBOT: A drone built by me
+
+1
+
+Introduction
+
+I am Ujjawal Prasad, a 3rd undergraduate student in the Department of Humanities and Social
+Sciences at the Indian Institute of Technology (IIT) Kharagpur. I am an active member of
+Aerial Robotics Kharagpur (ARK) Lab, a student-led research group dedicated to the
+development and innovation of aerial robotics. Outside of academics and research, I have a
+strong personal interest in olympic weightlifting, which I actively pursue alongside my technical
+work.
+
+2
+
+Research Interest
+
+My research interests lie primarily in intersection of control systems and perception for
+aerial vehicles. I have worked on enhancing drone autonomy and reliability. I also have
+experience with ground rovers. Additionally, I have contributed to electrical subsystems,
+complementing my core focus in robotics. An image of the drone I built is presented in Figure 1
+
+2.1
+
+My Projects
+
+The following document outlines all the projects I have undertaken, either as part of competitions or through self-initiated exploration. Please refer to the table of contents to view the
+listed projects.
+
+i
+
+Contents
+1 Introduction
+
+i
+
+2 Research Interest
+2.1 My Projects . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+i
+i
+
+3 Martian Terrain Mapping with Aerial Intelligence
+
+1
+
+4 Autonomous Exploration in GPS-Denied Environments
+4.1 Objective . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.2 Proposed Solution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.3 Sensor Setup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.4 Mapping with RTAB-Map . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4.5 Occupancy Grid and Frontier Detection . . . . . . . . . . . . . . . . . . . . . . .
+4.6 Navigation and Execution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+2
+2
+2
+2
+3
+4
+4
+
+5 SKYBOT Series
+
+6
+
+6 Autonomous Ground Rover for Search and Rescue Operations
+6.1 Problem Statement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+6.2 Proposed Solution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+8
+8
+
+7 Terrain-Adaptive Autonomous Weed Removal Robot
+10
+7.1 Our Problem Statement and Solution . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+ii
+
+3
+
+Martian Terrain Mapping with Aerial Intelligence
+
+This project is a part of an ISRO competition [link]. Our team at ARK Lab is developing
+a quadcopter to autonomously map the surface of Mars and identify suitable landing
+sites. The main challenge is to design an accurate and efficient aerial mapping system that can
+navigate the Martian terrain and generate detailed surface maps. I worked on the perception
+and localization components of the project.
+
+Figure 3: Mapping Software stack
+
+Figure 2: Hardware stack
+
+Figure 2 illustrates the hardware stack. The Intel RealSense camera provides depth images
+and IMU data to the flight computer (Jetson Orin Nano) via a USB 3.2 interface. The flight
+computer communicates with the Pixhawk 6C flight controller using the MAVLink protocol over
+USB. Additionally, the ARK Flow optical flow sensor sends optical flow data to the Pixhawk
+via the CAN protocol. Based on the processed sensor inputs, the flight controller generates the
+necessary PWM signals to drive the actuators.
+Figure 3 illustrates the software stack. We are using ROS 2 Humble on the Jetson Orin
+Nano as the backend server. The system integrates the Intel RealSense D435i depth camera
+through the librealsense2 SDK, which provides both raw depth images and IMU data. These
+inputs are fed into RTAB-Map, which generates Visual-Inertial Odometry (VIO). This VIO
+data is then fused with the IMU data from the Pixhawk using RTAB-Map’s internal fusion
+mechanisms to produce robust SLAM (Simultaneous Localization and Mapping) data.
+Since GPS is not available on Mars, which is typically crucial for position locking, we rely on
+the ARK Flow optical flow sensor to maintain a stable position hold during flight.
+Test video link: [link]
+
+1
+
+4
+
+Autonomous Exploration in GPS-Denied Environments
+
+Imagine a human trapped in an unfamiliar building—they look for walls, doors, and passages
+to find a way out. We aim to enable robots to do the same autonomously using onboard sensors
+and intelligent planning. This is the next mission for SKYBOT2 in the Skybot series Section 5.
+It has been successfully implemented in simulation.
+
+4.1
+
+Objective
+
+To autonomously map and explore completely GPS-denied, unmapped environments such as
+collapsed or caved-in areas.
+
+4.2
+
+Proposed Solution
+
+We propose an autonomous system that integrates LiDAR-based perception with real-time path
+planning. This allows the robot to identify unexplored regions and make intelligent navigation
+decisions without human intervention as shown in Figure 4.
+
+Figure 4: Overall Exploration Loop
+
+4.3
+
+Sensor Setup
+
+We use a GPU-based LiDAR in the Gazebo simulation environment, mounted on the opensource Open Robotics X3 UAV. The SDF file is modified to provide both PointCloud2 as
+shown in Figure 5 and LaserScan formats for flexibility in processing.
+Accurate mapping also requires odometry, which is estimated using:
+• Visual Odometry – derived from image and depth data
+• Point Cloud Matching – techniques such as Iterative Closest Point (ICP)
+These odometry sources help construct the Transform Tree (TF) as shown in Figure 6,
+ensuring consistent spatial alignment between the robot and the map.
+
+2
+
+Figure 5: Point Cloud of Simulated Environment
+
+Figure 6: Transform tree
+
+4.4
+
+Figure 7: RtabMap loop detection
+
+Mapping with RTAB-Map
+
+RTAB-Map uses a Bag-of-Words (BoW) model to determine if a region is: (a) Ho , i.e, new
+(unseen) or (b) Ha , i.e, previously seen. The map is updated incrementally as new information
+becomes available, allowing the system to refine its understanding of the environment in real
+time, as shown in Figure 7.
+
+Figure 8: SLAM Process: Initial and Final Map
+
+3
+
+The initial and final states of the SLAM process are shown in Figure 8. A demo video is
+provided for reference [link].
+
+4.5
+
+Occupancy Grid and Frontier Detection
+
+3D point clouds are converted into 2D occupancy grids for easier navigation, as illustrated in
+Figure 9. This is achieved by taking the horizontal plane of the point cloud relative to the
+robot’s LiDAR frame.
+
+Figure 9: 2D Occupancy Grid
+In the grid shown in Figure 9: (a) Positive values are occupied, (b) 0 is Free and (c) -1 is
+Unknown. The robot’s position is shown as a rectangle. Frontier cells are unknown cells
+adjacent to free cells, indicating unexplored regions.
+The explore lite node begins by initializing a map subscription, setting up the robot
+pose listener, and configuring parameters such as the minimum frontier size and goal publish
+rate. During execution, the node continuously retrieves the latest occupancy grid map and the
+robot’s current position. A breadth-first search (BFS) is performed starting from the robot’s
+location. The algorithm maintains a set of visited cells and a list of discovered frontiers. It
+enqueues the robot’s position and iteratively checks each dequeued cell. If a cell has not been
+visited and qualifies as a frontier cell, a new frontier region is grown from it. This region is
+only added to the frontier list if it exceeds the minimum required size. The neighbors of each
+valid cell are then explored recursively through BFS. Once all frontiers are identified, they are
+ranked based on distance from the robot. The nearest reachable frontier is selected as the next
+navigation goal.
+
+4.6
+
+Navigation and Execution
+
+To enable autonomous exploration for the X3 UAV, we utilize a behavior tree provided by
+the Nav2 stack, with goals dynamically assigned by the explore lite package. The behavior
+tree is centered around the NavigateWithReplanning pipeline sequence, which integrates path
+planning, path following, and recovery behaviors. Upon receiving a goal from explore lite,
+the UAV first attempts to compute a global path using the ComputePathToPose node. If
+planning fails, a recovery fallback clears the global costmap and retries. Once a path is computed, the FollowPath node commands the controller to execute it. If the path following fails,
+a secondary recovery sequence clears the local costmap and attempts to resume navigation.
+The use of RateController, recovery nodes, and costmap-clearing services ensures robustness
+4
+
+against dynamic obstacles and mapping errors, enabling continuous and adaptive exploration
+in unknown environments. The whole behaviour is summarized in Algorithm 1 and Figure 10.
+Algorithm Robot Behaviour Algorithm
+1: Initialize Navigation Stack()
+2: Initialize Explore Lite()
+
+▷ starts explore lite node to detect
+
+3:
+4: while system active do
+5:
+if map has unknown areas() do
+6:
+frontier goal = explore lite.get next frontier()
+7:
+publish goal to nav2(frontier goal)
+8:
+while not goal reached() do
+9:
+sleep(1)
+10:
+end while
+11:
+else
+12:
+stop exploration()
+13:
+break
+14: end while
+15: shutdown system()
+
+Figure 10: Behaviour Tree
+Demo of the Algorithm 1: [link]
+Code for the Algorithm 1: [link]
+
+5
+
+5
+
+SKYBOT Series
+
+My journey with aerial vehicles began when I received a DJI Tello (Figure 11) from my elder
+brother on July 23. It was the first drone I could code and experiment with. Eventually, I
+broke one of its motors. The repair took a long time, and my lack of understanding about how
+drones work got me curious about their inner mechanisms. This curiosity led to the birth of
+the SKYBOT series as shown in Figure 12.
+
+Figure 11: DJI Tello
+Figure 12: SKYBOT 1
+My first aerial robot was made using an Arduino [link]. With no understanding of control
+systems, I assumed the copter would fly—but it didn’t even lift off and kept toppling. I later
+installed a Pixhawk [link] flight controller with PID closed-loop control, which got it airborne
+[link], but it wobbled heavily. Even autotuning in QGC did not work [link].
+The copter experienced multiple hardware failures during development and testing, including the failure of two motors, three ESCs, and damage to several propellers, landing gear [link]
+and arm of the copter [link] as shown in Figure 13. Despite multiple PID tuning attempts and
+software tweaks, the drone was not stable [link], following were the root cases identified: (a)
+High KV (1400) motors are suited for high RPM, not high torque and (b) 11-inch carbon fiber
+props require high torque. Key lessons learned:
+• Use smaller props with high KV motors.
+• Avoid carbon fiber props for beginners—they cause more frame stress during crashes.
+
+Figure 13: SKYBOT 1 Crash
+
+Figure 14: SKYBOT 2
+
+6
+
+This new variant Figure 14, incorporating improvements based on previous learnings, achieved
+stable flight using the default PID settings [link]. I then began upgrading the system for autonomous missions by integrating a Jetson Orin Nano Super and an Intel RealSense D435i
+depth camera, as shown in Figure 15 and Figure 16. Below are some payload testing videos:
+[link 1] [link 2]
+
+Figure 16: Final drone with all sensors
+Figure 15: JETSON Integrated
+This model will be tested for 3D SLAM and autonomous exploration (see Section 4). Currently, the lack of an optical flow sensor has paused the project.
+
+Figure 17: SKYBOT3 (build in progress)
+Figure 17 is a new build intended for small payload carrying tasks. The exact applications
+are yet to be decided.
+
+7
+
+6
+
+Autonomous Ground Rover for Search and Rescue
+Operations
+
+This project was developed as part of the Hardware Modeling Competition 2024–25 (Spring
+Semester) held at IIT Kharagpur. Participants were tasked with identifying and solving a
+real-world problem of their choice.
+
+6.1
+
+Problem Statement
+
+Disasters such as earthquakes and coal mine collapses often pose severe risks for rescue personnel entering unstable environments. Deploying humans directly into such conditions can be
+life-threatening. To address this challenge, we developed a compact ground rover capable of
+performing autonomous mapping and detecting human presence in disaster-affected areas.
+
+6.2
+
+Proposed Solution
+
+Figure 18: Voyager – Our Search and Rescue Rover
+I was solely responsible for the software architecture of the system. The robot employs SLAM
+(Simultaneous Localization and Mapping). In addition, it integrates an mmWave sensor to
+estimate the distance to moving objects in real-time.
+Why mmWave? The mmWave sensor was selected for its unique ability to detect vital signs such as human heartbeat — even through debris or obstructed environments. In
+situations where a person may be trapped but still alive, the mmWave sensor can identify
+micro-movements, such as chest oscillations caused by breathing or heartbeat. We conducted
+multiple field tests to validate this capability, and the results were successful.
+
+8
+
+Figure 20: Sensor stack
+
+Figure 19: Hardware stack
+
+Figure 21: Mapping stack
+Figure 19 The Intel RealSense camera provides both depth images and IMU data to the flight
+computer (Jetson Orin Nano) via a USB 3.2 interface. The Jetson is paired with a Pixhawk
+2.4.8 flight controller, and the two communicate using the MAVLink protocol over USB. Motor
+drivers are directly connected to the Jetson and interface using the Modbus protocol, while an
+Arduino is also connected to the Jetson through a UART interface.
+Figure 21 illustrates the software stack. We are using ROS 2 Humble on the Jetson Orin
+Nano as the backend server. The system integrates the Intel RealSense D435i depth camera
+through the librealsense2 SDK, which provides both raw depth images and IMU data. These
+inputs are fed into RTAB-Map, which generates Visual-Inertial Odometry (VIO). This VIO
+data is then fused with the IMU data from the Pixhawk using RTAB-Map’s internal fusion
+mechanisms to produce robust SLAM (Simultaneous Localization and Mapping) data.
+Test video link: [link]
+
+9
+
+7
+
+Terrain-Adaptive Autonomous Weed Removal Robot
+
+This project was undertaken as part of the Hardware Modeling Competition 2023–24 (Spring
+Semester) organized at IIT Kharagpur. Participants were allowed to choose their own problem
+statements aimed at addressing real-world challenges.
+
+7.1
+
+Our Problem Statement and Solution
+
+Weed removal in terrain-adaptive farms can significantly enhance crop yield and reduce manual
+labor for farmers. Hence, we propose a terrain-adaptive autonomous weed removal robot as
+our solution, as shown in Figure 22.
+
+Figure 22: System Architecture of the Weed Removal Robot
+I was a part of the perception team in this project. My primary responsibility was to detect
+weeds in farm environments and generate bounding boxes around them (i.e., object detection).
+For this task, I fine-tuned a YOLOv8 Figure 23 model using a publicly available weed and
+crop dataset from Kaggle. The results are shown in Figure 24.
+
+Figure 23: YOLOv8 Model Architecture
+
+10
+
+Figure 24: Detection Results on Test Set
+
+11
+
+

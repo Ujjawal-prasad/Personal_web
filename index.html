@@ -20,7 +20,10 @@
         <h1>Ujjawal Prasad</h1>
         <p class="hero-text">
           Robotics builder focused on control, perception, and autonomous
-          navigation for aerial and ground systems.
+          navigation for aerial and ground systems, with current work in adaptive
+          quadrotor morphology in my BTP and decentralized multi-robot SLAM,
+          including an IISc internship project on Swarm-SLAM completed in
+          December 2025.
         </p>
       </div>
     </header>
@@ -33,83 +36,402 @@
             I am a 3rd year undergraduate at IIT Kharagpur and an active member
             of ARK Lab. My research interest is at the intersection of control
             systems and perception for aerial vehicles. I work on autonomy,
-            reliability, SLAM pipelines, and field testing for both drones and
-            ground rovers.
+            reliability, SLAM pipelines, flight-controller modification, and
+            field testing for both drones and ground rovers.
           </p>
           <p>
             This portfolio highlights selected projects with clear problem
-            statements, technical decisions, and outcomes.
+            statements, technical decisions, and outcomes, now including recent
+            work on adaptive morphology for quadrotors in my BTP under Prof.
+            Agnha Mukherjee and Prof. Prabhat Kumar Mishra, along with
+            collaborative Swarm-SLAM simulation carried out during my IISc
+            internship under Prof. Shishir N. Y.
           </p>
         </div>
       </section>
 
       <section class="section section-alt" id="projects">
-        <div class="container">
+        <div class="container project-list">
           <div class="section-head">
             <h2>Selected Robotics Projects</h2>
             <p>Quality-focused project stories with my role and technical stack.</p>
           </div>
 
-          <article class="project">
+          <article class="project" id="project-btp-card">
             <img
-              src="assets/robot-021.jpg"
-              alt="Drone platform used for Martian terrain mapping research"
+              src="assets/btp/fig-033.jpg"
+              alt="Adaptive morphology quadrotor in O-configuration simulation"
             />
             <div>
-              <h3>Martian Terrain Mapping with Aerial Intelligence</h3>
+              <p class="meta-line">Current BTP at IIT Kharagpur under Prof. Agnha Mukherjee and Prof. Prabhat Kumar Mishra</p>
+              <h3>Adaptive Morphology for Quadrotor</h3>
               <p>
-                <span class="label">Problem:</span> Build a quadcopter pipeline
-                for autonomous surface mapping and landing-site assessment in an
-                ISRO competition context.
+                <span class="label">Research Context:</span> This is my current
+                BTP at IIT Kharagpur on a quadrotor whose arm geometry can
+                change during operation instead of remaining fixed throughout a
+                mission.
               </p>
               <p>
-                <span class="label">Approach:</span> Integrated Intel RealSense
-                D435i, Jetson Orin Nano, Pixhawk 6C, and ARK Flow optical flow.
-                Built ROS 2 Humble + RTAB-Map VIO/SLAM stack with MAVLink and
-                CAN communication.
+                <span class="label">My Work:</span> I shaped the concept, built
+                the simulation models, adapted the mixer and control logic, and
+                pushed the work toward a physical prototype.
               </p>
               <p>
-                <span class="label">My Contribution:</span> Perception and
-                localization pipeline design, sensor fusion flow, and mapping
-                workflow integration.
+                <span class="label">Current Status:</span> The project has
+                already produced stable simulated behavior across multiple
+                configurations and an initial hardware direction, with the full
+                technical flow available below.
               </p>
-              <p>
-                <span class="label">Stack:</span> ROS 2 Humble, RTAB-Map,
-                librealsense2, MAVLink, Pixhawk, Jetson Orin Nano.
-              </p>
+
+              <details class="project-details">
+                <summary>Open Full BTP Technical Details</summary>
+                <div class="details-body">
+                  <div class="detail-block">
+                    <h4>Problem Framing</h4>
+                    <p>
+                      The central question in this BTP is how to make a
+                      quadrotor remain controllable while its physical geometry
+                      changes. A conventional quadrotor is designed around a
+                      fixed frame, fixed arm lengths, and a fixed thrust
+                      allocation structure. In this project, the geometry itself
+                      becomes a variable, which means the controller and overall
+                      system architecture have to adapt along with the vehicle.
+                    </p>
+                    <p>
+                      I am studying this through a reconfigurable quadrotor that
+                      can transition across multiple arm layouts, including X,
+                      T, and O-like configurations. The aim is to understand how
+                      morphology changes affect stability, actuation, control
+                      authority, and mission use.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>What I Have Done</h4>
+                    <ul class="detail-list">
+                      <li>Defined the project as a complete aerial robotics system rather than only a CAD or control exercise.</li>
+                      <li>Built the morphology concept through repeated mechanical design iterations and component-level modeling.</li>
+                      <li>Created simulation-ready geometry and vehicle descriptions so the platform could be evaluated before hardware locking.</li>
+                      <li>Integrated the platform into Gazebo and PX4 SITL workflows to study behavior under changing arm geometry.</li>
+                      <li>Worked on the control allocation side so total thrust and body torques could still be meaningfully distributed as the frame changed.</li>
+                      <li>Tested different configurations in simulation and tracked whether stable hovering could be maintained across transitions.</li>
+                      <li>Moved the work toward hardware through an initial prototype and an electronics-level integration view.</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>CAD Design</h4>
+                    <p>
+                      The project began with CAD-level iteration on the frame,
+                      arm elements, and structural parts required for a
+                      reconfigurable quadrotor. This stage helped me reason
+                      about how the geometry could physically change before
+                      moving into simulation and control adaptation.
+                    </p>
+                    <div class="figure-grid" id="btp-cad-gallery"></div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>SDF Model Creation for Gazebo</h4>
+                    <p>
+                      After the CAD stage, I converted the design into
+                      simulation-oriented models for Gazebo. These figures
+                      represent the vehicle model creation stage that connected
+                      the geometry work to the simulated platform used for hover
+                      and morphology testing.
+                    </p>
+                    <div class="figure-grid" id="btp-sdf-gallery"></div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Control and Logic</h4>
+                    <p>
+                      The logic of the project is that changing morphology also
+                      changes the actuation geometry. That means the mapping
+                      between desired forces and motor commands cannot remain
+                      identical to the rigid-frame case. My work therefore
+                      focused on making the controller aware of the changing arm
+                      arrangement instead of assuming a constant mixer.
+                    </p>
+                    <p>
+                      In practice, this meant studying how the force and moment
+                      contributions of each motor vary with arm angle, and then
+                      embedding that into the control pipeline so the vehicle can
+                      still hold attitude and altitude during different
+                      configurations. The project combines geometry reasoning,
+                      allocation logic, and simulation validation in one loop.
+                    </p>
+                    <p>
+                      <span class="label">Mixer Allocation Matrix:</span> The
+                      mixer maps collective thrust and total body torques to the
+                      individual motor thrusts as a function of arm angles and
+                      geometry.
+                    </p>
+                    <div class="math-block" aria-label="Mixer allocation matrix">
+                      <div class="math-row">
+                        <span class="math-bracket">[</span>
+                        <table class="math-vector" aria-hidden="true">
+                          <tr><td>&tau;<sub>x</sub></td></tr>
+                          <tr><td>&tau;<sub>y</sub></td></tr>
+                          <tr><td>&tau;<sub>z</sub></td></tr>
+                          <tr><td>c</td></tr>
+                        </table>
+                        <span class="math-bracket">]</span>
+                        <span class="math-equals">=</span>
+                        <span class="math-bracket">[</span>
+                        <table class="math-matrix" aria-hidden="true">
+                          <tr>
+                            <td>b + a sin &theta;<sub>1</sub></td>
+                            <td>-b + a sin &theta;<sub>2</sub></td>
+                            <td>b + a sin &theta;<sub>3</sub></td>
+                            <td>-b + a sin &theta;<sub>4</sub></td>
+                          </tr>
+                          <tr>
+                            <td>l + cos &theta;<sub>1</sub></td>
+                            <td>-l + cos &theta;<sub>2</sub></td>
+                            <td>-l + cos &theta;<sub>3</sub></td>
+                            <td>l + cos &theta;<sub>4</sub></td>
+                          </tr>
+                          <tr>
+                            <td>k<sub>1</sub></td>
+                            <td>k<sub>2</sub></td>
+                            <td>-k<sub>3</sub></td>
+                            <td>-k<sub>4</sub></td>
+                          </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                          </tr>
+                        </table>
+                        <span class="math-bracket">]</span>
+                        <span class="math-times">*</span>
+                        <span class="math-bracket">[</span>
+                        <table class="math-vector" aria-hidden="true">
+                          <tr><td>f<sub>1</sub></td></tr>
+                          <tr><td>f<sub>2</sub></td></tr>
+                          <tr><td>f<sub>3</sub></td></tr>
+                          <tr><td>f<sub>4</sub></td></tr>
+                        </table>
+                        <span class="math-bracket">]</span>
+                      </div>
+                    </div>
+                    <div class="figure-grid" id="btp-control-gallery"></div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Different Morphology Configurations</h4>
+                    <p>
+                      These simulation images correspond to the four morphology
+                      configurations used in the study. The order is default
+                      configuration first, followed by X, T, and O.
+                    </p>
+                    <div class="figure-grid" id="btp-morph-gallery"></div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Hardware Prototype</h4>
+                    <p>
+                      The project has also moved toward physical realization.
+                      These figures show the early hardware prototype and the
+                      system integration direction for the adaptive morphology
+                      platform.
+                    </p>
+                    <figure class="featured-figure">
+                      <img
+                        src="assets/btp/morphing_drone_v1.jpeg"
+                        alt="First 3D printed assembly for the morphing drone"
+                      />
+                      <figcaption>First 3D printed assembly for the morphing drone.</figcaption>
+                    </figure>
+                    <div class="figure-grid" id="btp-hardware-gallery"></div>
+                  </div>
+                </div>
+              </details>
             </div>
           </article>
 
-          <article class="project">
+          <article class="project" id="project-iisc-card">
             <img
-              src="assets/robot-000.jpg"
-              alt="SKYBOT2 platform for autonomous exploration in GPS-denied spaces"
+              src="assets/swarm/fig-003.jpg"
+              alt="Real-time inter-robot loop closure in Swarm-SLAM"
             />
             <div>
-              <h3>Autonomous Exploration in GPS-Denied Environments</h3>
+              <p class="meta-line">Internship at IISc Bengaluru under Prof. Shishir N. Y. | December 2025</p>
+              <h3>Swarm-SLAM Multi-Robot Simulation</h3>
               <p>
-                <span class="label">Problem:</span> Enable UAV exploration in
-                unknown environments without GPS, such as collapsed structures.
+                <span class="label">Internship Context:</span> This work was
+                done during my internship at the Indian Institute of Science in
+                December 2025 under Prof. Shishir N. Y., focused on making a
+                collaborative Swarm-SLAM pipeline actually run in simulation.
               </p>
               <p>
-                <span class="label">Approach:</span> Used LiDAR-based perception
-                in Gazebo, point cloud + visual odometry, RTAB-Map loop closure,
-                occupancy grid conversion, BFS frontier detection, and Nav2
-                behavior-tree navigation with recovery actions.
+                <span class="label">My Work:</span> My contribution was not just
+                workspace setup, integration debugging, multi-robot launch
+                design, namespacing, visualization fixes, and tracking the
+                backend issue precisely enough to isolate the remaining blocker.
               </p>
               <p>
-                <span class="label">My Contribution:</span> Exploration logic
-                integration from map generation to frontier goal selection and
-                autonomous execution flow.
+                <span class="label">Outcome:</span> The most important milestone
+                was demonstrating real-time inter-robot loop closure in
+                simulation, while also identifying the remaining backend issue
+                with robot 1 keyframe optimization.
               </p>
-              <p>
-                <span class="label">Stack:</span> ROS 2, Nav2, RTAB-Map, Gazebo,
-                ICP, LiDAR PointCloud2/LaserScan.
-              </p>
+
+              <details class="project-details">
+                <summary>Open Full Internship Technical Details</summary>
+                <div class="details-body">
+                  <div class="detail-block">
+                    <h4>Implementation Goal</h4>
+                    <p>
+                      The first target during the internship was to validate
+                      Swarm-SLAM in simulation before attempting more complex
+                      multi-robot scenarios. To keep the system manageable, I
+                      started with two robots and focused on achieving real-time
+                      inter-robot loop closure.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Setup Work Completed</h4>
+                    <ul class="detail-list">
+                      <li>Created a ROS 2 workspace for the Swarm-SLAM evaluation flow.</li>
+                      <li>Used the SAM Bot from the Nav2 tutorials as the robot model in Gazebo.</li>
+                      <li>Built and verified the robot setup before integrating the collaborative SLAM stack.</li>
+                      <li>Cloned and built the Swarm-SLAM framework despite version warnings during setup.</li>
+                      <li>Configured the required parameter file for the LiDAR launch flow.</li>
+                      <li>Added the transform expected between odometry and the current pose frame.</li>
+                      <li>Brought in the visualization package separately because it was not included by default.</li>
+                      <li>Applied a ROS 2 timestamp fix inside the visualizer so published transforms were valid.</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>How the Pipeline Worked in My Setup</h4>
+                    <p>
+                      In my simulation setup, Swarm-SLAM consumed odometry and
+                      PointCloud2 data generated from RGB-D sensing on each
+                      robot. The frontend generated keyframes, constructed
+                      pose-graph information, and looked for loop closures. The
+                      backend then optimized the graph using decentralized logic
+                      rather than a centralized SLAM server.
+                    </p>
+                    <p>
+                      The main implementation milestone was to make this flow
+                      run reliably enough that I could observe and verify an
+                      actual inter-robot loop closure in simulation instead of
+                      just launching packages independently.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Single-Robot Milestone</h4>
+                    <p>
+                      I first validated the framework on a single robot. That
+                      stage was important because it let me confirm basic robot
+                      spawning, sensing, visualization, teleoperation, and local
+                      map generation before moving to the more failure-prone
+                      multi-robot configuration.
+                    </p>
+                    <pre><code>mkdir ~/ISRO_scout_rover/src
+cd ~/ISRO_scout_rover/src
+git clone https://github.com/ros-navigation/navigation2_tutorials.git
+colcon build
+ros2 launch sam_bot_description display.launch.py
+ros2 launch cslam_experiments cslam_lidar.launch.py use_sim_time:=true
+ros2 launch cslam_visualization visualization_lidar.launch.py use_sim_time:=true
+ros2 run teleop_twist_keyboard teleop_twist_keyboard</code></pre>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Move to Two Robots</h4>
+                    <p>
+                      Once the single-robot flow worked, I extended it to a
+                      two-robot setup. This required more than just launching a
+                      second instance. I created a dedicated multi-robot launch
+                      flow and also prepared separate SDF copies with prefixed
+                      link and joint names so Gazebo would not confuse entities
+                      from different robots.
+                    </p>
+                    <pre><code>Terminal 1:
+ros2 launch sam_bot_description multi_robot_launch.py
+
+Terminal 2:
+ros2 launch cslam_experiments cslam_lidar.launch.py namespace:=/r0 robot_id:=0 max_nb_robots:=2 use_sim_time:=true
+
+Terminal 3:
+ros2 launch cslam_experiments cslam_lidar.launch.py namespace:=/r1 robot_id:=1 max_nb_robots:=2 use_sim_time:=true</code></pre>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Debugging and Observations</h4>
+                    <p>
+                      A large part of the work involved debugging transforms,
+                      topics, namespaces, and graph behavior. I used the pose
+                      graph and keyframe topics directly to track what the
+                      framework was doing and to understand whether both robots
+                      were contributing consistently.
+                    </p>
+                    <pre><code>/cslam/pose_graph
+/r0/cslam/keyframe_data
+/r0/cslam/keyframe_odom</code></pre>
+                    <p>
+                      The main unresolved issue was that the backend optimized
+                      robot 0 keyframes but not robot 1 keyframes. Based on the
+                      observed behavior, the likely causes were anchor
+                      selection, namespace configuration, or inter-robot pose
+                      graph sharing in the decentralized backend.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Result Achieved</h4>
+                    <p>
+                      Even with the backend issue still open, I successfully
+                      demonstrated real-time inter-robot loop closure in
+                      simulation. In the tested scenario, one robot explored
+                      first and the second robot was then driven to the initial
+                      position of the first, at which point the loop closure was
+                      detected and the trajectories aligned.
+                    </p>
+                    <div class="video-embed">
+                      <iframe
+                        src="https://drive.google.com/file/d/1vKZIlhg4KHLi9yAi_QFH1MQ8CYMqj4Du/preview"
+                        title="Inter-robot loop closure demo video"
+                        loading="lazy"
+                        allow="autoplay"
+                      ></iframe>
+                    </div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Why Swarm-SLAM Was a Good Fit</h4>
+                    <ul class="detail-list">
+                      <li>It is designed to be decentralized instead of depending on one central SLAM server.</li>
+                      <li>It supports multiple sensing modalities, including LiDAR, stereo, and RGB-D.</li>
+                      <li>It aims to scale toward larger robot teams.</li>
+                      <li>It reduces communication load by exchanging compact descriptors instead of full maps.</li>
+                      <li>It performs real-time inter-robot loop closure instead of only stitching maps offline.</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Image Archive</h4>
+                    <p>
+                      The gallery below uses the full local Swarm-SLAM figure set
+                      from <code>assets/swarm</code>, covering point-cloud
+                      outputs, simulation environment views, and loop-closure
+                      visualization.
+                    </p>
+                    <div class="figure-grid" id="swarm-gallery"></div>
+                  </div>
+                </div>
+              </details>
             </div>
           </article>
 
-          <article class="project">
+          <article class="project" id="project-skybot-card">
             <img
               src="assets/robot-018.jpg"
               alt="Early SKYBOT drone prototype"
@@ -117,29 +439,220 @@
             <div>
               <h3>SKYBOT Series (SKYBOT 1 to 3)</h3>
               <p>
-                <span class="label">Problem:</span> Build stable and extensible
-                custom aerial robots from scratch through iterative prototyping.
+                <span class="label">Project Context:</span> The SKYBOT series is
+                my long-running journey of building custom aerial robots from
+                scratch and learning through repeated redesign.
               </p>
               <p>
-                <span class="label">Approach:</span> Progressed from Arduino-only
-                attempts to Pixhawk closed-loop control, diagnosed instability,
-                then redesigned around hardware-control compatibility and later
-                integrated Jetson Orin Nano + RealSense D435i for autonomous
-                mission readiness.
-              </p>
-              <p>
-                <span class="label">Key Lessons:</span> Matching motor KV and
-                propeller torque demand is critical. Crash behavior and frame
-                stress must drive component choices.
+                <span class="label">Progression:</span> It started with a simple
+                Arduino-based build, moved through failure analysis and frame
+                redesign, and then grew into a more serious autonomy-ready drone
+                with onboard compute and depth sensing.
               </p>
               <p>
                 <span class="label">Outcome:</span> Stable SKYBOT2 flight and
-                SKYBOT3 under development for payload-focused missions.
+                a continuing transition toward payload-capable and
+                autonomy-oriented aerial systems through SKYBOT3.
               </p>
+
+              <details class="project-details">
+                <summary>Open Full SKYBOT Series Details</summary>
+                <div class="details-body">
+                  <div class="detail-block">
+                    <h4>Where It Started</h4>
+                    <p>
+                      My journey with aerial vehicles began with a DJI Tello. It
+                      was the first drone I could code and experiment with, and
+                      it was also the point where curiosity turned into a
+                      serious desire to understand how drones actually work.
+                      Breaking one of its motors and waiting through the repair
+                      process pushed me to move beyond ready-made drones and try
+                      building my own.
+                    </p>
+                    <div class="figure-grid">
+                      <figure class="figure-card">
+                        <img
+                          src="assets/robot-017.jpg"
+                          alt="DJI Tello that started the SKYBOT journey"
+                        />
+                        <figcaption>DJI Tello, the drone that started my interest in building aerial systems.</figcaption>
+                      </figure>
+                      <figure class="figure-card">
+                        <img
+                          src="assets/robot-018.jpg"
+                          alt="SKYBOT 1 early custom drone build"
+                        />
+                        <figcaption>SKYBOT 1, my first custom aerial robot build.</figcaption>
+                      </figure>
+                    </div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>SKYBOT 1: First Custom Build and First Big Lessons</h4>
+                    <p>
+                      SKYBOT 1 began as an Arduino-based attempt at building a
+                      quadrotor from scratch. At that stage I did not yet have a
+                      solid understanding of control systems, and I initially
+                      assumed the drone would simply fly once the hardware was
+                      assembled. It did not. The drone struggled even to lift
+                      properly and repeatedly toppled.
+                    </p>
+                    <p>
+                      I later installed a Pixhawk flight controller and moved to
+                      PID-based closed-loop control. That got the drone airborne,
+                      but it still wobbled heavily and never became trustworthy
+                      in flight. Multiple tuning attempts and software changes
+                      did not fix the underlying hardware-control mismatch.
+                    </p>
+                    <p>
+                      During development, the platform went through several
+                      failures, including damaged motors, ESCs, propellers, and
+                      frame elements. These failures were frustrating, but they
+                      were also the stage where I learned the most about how
+                      frame design, propeller choice, and motor selection affect
+                      actual flight behavior.
+                    </p>
+                    <div class="figure-grid">
+                      <figure class="figure-card">
+                        <img
+                          src="assets/robot-018.jpg"
+                          alt="SKYBOT 1 early frame and electronics layout"
+                        />
+                        <figcaption>Early SKYBOT 1 frame and electronics layout.</figcaption>
+                      </figure>
+                      <figure class="figure-card">
+                        <img
+                          src="assets/robot-019.jpg"
+                          alt="SKYBOT 1 after crash and hardware damage"
+                        />
+                        <figcaption>SKYBOT 1 after crash-related damage during testing.</figcaption>
+                      </figure>
+                    </div>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>What SKYBOT 1 Taught Me</h4>
+                    <p>
+                      The key lesson from SKYBOT 1 was that stable flight is not
+                      just about adding a controller. The hardware itself has to
+                      make sense. I identified two main issues: very high KV
+                      motors are better suited to high RPM than high torque, and
+                      the large 11-inch carbon fiber propellers demanded more
+                      torque than the system could comfortably supply.
+                    </p>
+                    <ul class="detail-list">
+                      <li>Use smaller propellers when the motors are optimized for high RPM rather than high torque.</li>
+                      <li>Avoid overly rigid, crash-unfriendly propeller choices early in development.</li>
+                      <li>Frame stress, crash survival, and component matching matter as much as control tuning.</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>SKYBOT 2: Redesign Toward Stability</h4>
+                    <p>
+                      SKYBOT 2 was built by carrying forward those lessons into a
+                      cleaner and better-matched design. This version achieved
+                      stable flight using the default PID settings, which was an
+                      important moment because it showed that the earlier
+                      instability was not only a tuning issue, but also a design
+                      issue.
+                    </p>
+                    <figure class="featured-figure">
+                      <img
+                        src="assets/robot-020.jpg"
+                        alt="SKYBOT 2 redesigned drone platform"
+                      />
+                      <figcaption>SKYBOT 2, the redesigned platform that achieved stable flight.</figcaption>
+                    </figure>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>From Manual Flight to Autonomy Preparation</h4>
+                    <p>
+                      After achieving a stable base platform, I began upgrading
+                      the drone for autonomous missions. This was the stage where
+                      the SKYBOT series moved from being purely a flight
+                      stability exercise to becoming a broader aerial robotics
+                      platform.
+                    </p>
+                    <p>
+                      I integrated a Jetson Orin Nano Super and an Intel
+                      RealSense D435i depth camera so the drone could later be
+                      used for tasks such as 3D SLAM and autonomous exploration.
+                      This changed the nature of the project: the drone was no
+                      longer only about flying, but about carrying compute,
+                      sensors, and future autonomy logic onboard.
+                    </p>
+                    <div class="figure-grid">
+                      <figure class="figure-card">
+                        <img
+                          src="assets/robot-021.jpg"
+                          alt="SKYBOT with Jetson integrated onboard"
+                        />
+                        <figcaption>Jetson-integrated upgrade stage of the SKYBOT platform.</figcaption>
+                      </figure>
+                      <figure class="figure-card">
+                        <img
+                          src="assets/robot-022.jpg"
+                          alt="Final SKYBOT configuration with onboard sensors"
+                        />
+                        <figcaption>Final SKYBOT 2 configuration with onboard compute and sensing.</figcaption>
+                      </figure>
+                    </div>
+                    <p>
+                      I also ran a YOLOv8 segmentation model online on the
+                      Jetson Orin Nano onboard SKYBOT 2. The video below shows
+                      that live inference setup in action on the platform.
+                    </p>
+                    <figure class="featured-figure">
+                      <div class="video-embed">
+                        <iframe
+                          src="https://www.youtube.com/embed/UwUnhTRzp0s"
+                          title="YOLOv8 segmentation running on Jetson Orin Nano on SKYBOT 2"
+                          loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                        ></iframe>
+                      </div>
+                      <figcaption>
+                        YOLOv8 segmentation running online on the Jetson Orin
+                        Nano onboard SKYBOT 2.
+                      </figcaption>
+                    </figure>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Current Status and SKYBOT 3</h4>
+                    <p>
+                      The current work now extends toward SKYBOT 3, a newer build
+                      intended for small payload-carrying tasks. The exact
+                      mission use is still being shaped, but the broader
+                      direction is clear: the SKYBOT series has evolved from a
+                      first experimental build into a platform family through
+                      which I have learned flight stability, redesign, hardware
+                      integration, and mission-oriented aerial system thinking.
+                    </p>
+                    <p>
+                      Work on autonomy-ready operation is still influenced by
+                      missing supporting hardware such as an optical flow sensor,
+                      but the series continues to serve as my hands-on platform
+                      for learning and iteration in aerial robotics.
+                    </p>
+                    <figure class="featured-figure">
+                      <img
+                        src="assets/robot-023.jpg"
+                        alt="SKYBOT 3 build in progress"
+                      />
+                      <figcaption>SKYBOT 3 build in progress for future payload-focused missions.</figcaption>
+                    </figure>
+                  </div>
+                </div>
+              </details>
             </div>
           </article>
 
-          <article class="project">
+          <article class="project" id="project-rover-card">
             <img
               src="assets/robot-024.jpg"
               alt="Autonomous ground rover for search and rescue"
@@ -147,54 +660,185 @@
             <div>
               <h3>Autonomous Ground Rover for Search and Rescue</h3>
               <p>
-                <span class="label">Problem:</span> Reduce risk to rescue teams
-                in dangerous environments such as earthquake and mine-collapse
-                zones.
+                <span class="label">Competition Context:</span> This project was
+                developed for the Hardware Modeling Competition 2024-25 at IIT
+                Kharagpur around the problem of search and rescue in dangerous
+                disaster environments.
               </p>
               <p>
-                <span class="label">Approach:</span> Built autonomous mapping
-                rover architecture with SLAM and integrated mmWave sensing to
-                detect human vital-sign micro-movements under debris.
+                <span class="label">Problem:</span> Entering earthquake-affected
+                or mine-collapse zones is dangerous for human responders, so the
+                rover was designed to perform autonomous mapping while also
+                checking for signs of trapped survivors.
               </p>
               <p>
                 <span class="label">My Contribution:</span> Solely handled
-                software architecture, mapping stack design, and integration of
-                RealSense, Jetson, Pixhawk, motor drivers (Modbus), and Arduino
-                communication (UART).
+                software architecture, mapping stack design, field-testing
+                workflow, and integration of RealSense, Jetson, Pixhawk, motor
+                drivers, and supporting electronics.
               </p>
               <p>
-                <span class="label">Stack:</span> ROS 2 Humble, RTAB-Map,
-                RealSense D435i, Jetson Orin Nano, Pixhawk 2.4.8, MAVLink.
+                <span class="label">Outcome:</span> The system combined SLAM
+                with mmWave-based human-presence sensing, and field tests were
+                carried out to validate both rover operation and survivor
+                detection ideas.
               </p>
+
+              <details class="project-details">
+                <summary>Open Full Rover Project Details</summary>
+                <div class="details-body">
+                  <div class="detail-block">
+                    <h4>Problem and Motivation</h4>
+                    <p>
+                      The rover was designed for disaster-response scenarios
+                      where sending a person directly into the environment is
+                      risky. Earthquakes, collapsed structures, and mining
+                      accidents create spaces that are unstable, cluttered, and
+                      dangerous. The goal was therefore to create a compact
+                      ground robot that could move into the area first, map the
+                      environment, and support rescue teams with useful
+                      information before human entry.
+                    </p>
+                    <p>
+                      What made this project stronger was that it was not only a
+                      navigation platform. It also aimed to detect possible
+                      trapped survivors through mmWave sensing, which gave the
+                      rover a meaningful rescue-specific function beyond just
+                      locomotion.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>My Role</h4>
+                    <p>
+                      I was solely responsible for the software architecture of
+                      the rover. That meant designing how sensing, onboard
+                      computation, mapping, control, and communication fit
+                      together as one functioning system rather than isolated
+                      modules.
+                    </p>
+                    <ul class="detail-list">
+                      <li>Designed the SLAM-centered software workflow for the rover.</li>
+                      <li>Integrated the sensing and compute stack around Jetson, RealSense, and Pixhawk.</li>
+                      <li>Handled the data and communication paths across the rover control and sensing stack.</li>
+                      <li>Set up and validated the mapping pipeline used during outdoor and night tests.</li>
+                      <li>Worked on making the rover useful specifically for rescue-style deployment rather than as a generic UGV.</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Why mmWave Was Important</h4>
+                    <p>
+                      The rover used an mmWave sensor because it can detect
+                      vital-sign-level micro-movements, such as breathing or
+                      heartbeat, even in partially obstructed environments. In a
+                      rescue setting, that matters because a trapped person may
+                      not be visible but may still be alive under debris or in a
+                      confined space.
+                    </p>
+                    <p>
+                      This gave the rover a stronger rescue focus: it was not
+                      only a platform for mobility and mapping, but also an
+                      attempt to support survivor identification in conditions
+                      where direct visual confirmation may fail.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>System Architecture</h4>
+                    <p>
+                      The rover software stack used ROS 2 Humble on the Jetson
+                      Orin Nano as the main backend. The Intel RealSense D435i
+                      supplied depth and IMU data, which were processed through
+                      librealsense2 and RTAB-Map to generate visual-inertial
+                      odometry and SLAM outputs. The Jetson worked alongside a
+                      Pixhawk 2.4.8 controller through MAVLink, while motor
+                      drivers and an Arduino were connected through Modbus and
+                      UART respectively.
+                    </p>
+                    <p>
+                      From a system-design perspective, this was a full
+                      integration problem: sensing, mapping, low-level control,
+                      and rescue-oriented payload logic all had to coexist on a
+                      single rover platform.
+                    </p>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>CAD and Built Rover</h4>
+                    <p>
+                      The image below places the CAD view and the built front
+                      view together, which makes the design-to-build transition
+                      clear.
+                    </p>
+                    <figure class="featured-figure">
+                      <img
+                        src="assets/rover/cad-vs-actual.png"
+                        alt="CAD render and front view of the autonomous rescue rover"
+                      />
+                      <figcaption>CAD model and actual built rover shown side by side.</figcaption>
+                    </figure>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Chassis Analysis</h4>
+                    <p>
+                      Static structural analysis of the rover chassis, showing
+                      deformation and strain views, helps place the rover not
+                      just as a software platform, but as a system whose
+                      mechanical structure was also analyzed for robustness.
+                    </p>
+                    <figure class="featured-figure">
+                      <img
+                        src="assets/rover/chassis-analysis.png"
+                        alt="Static structural analysis of the rescue rover chassis"
+                      />
+                      <figcaption>Static structural analysis of the rover chassis.</figcaption>
+                    </figure>
+                  </div>
+
+                  <div class="detail-block">
+                    <h4>Field Testing and Videos</h4>
+                    <p>
+                      These videos show the rover in actual testing conditions,
+                      including night operation and SLAM-driven field testing
+                      with a laptop-based monitoring setup. They are embedded
+                      below so they can be played directly on the page.
+                    </p>
+                    <div class="figure-grid">
+                      <figure class="figure-card">
+                        <div class="video-embed">
+                          <iframe
+                            src="https://drive.google.com/file/d/11K5zJofjfBAqlIUB6yNyJcpPAS2XPW4B/preview"
+                            title="Night-time rover field test video"
+                            loading="lazy"
+                            allow="autoplay"
+                          ></iframe>
+                        </div>
+                        <figcaption>
+                          Night-time rover field test.
+                        </figcaption>
+                      </figure>
+                      <figure class="figure-card">
+                        <div class="video-embed">
+                          <iframe
+                            src="https://drive.google.com/file/d/1kfWTSYr-ZGZY7eK5uwNnAE-w5lnl8guA/preview"
+                            title="Outdoor SLAM and monitoring test video"
+                            loading="lazy"
+                            allow="autoplay"
+                          ></iframe>
+                        </div>
+                        <figcaption>
+                          Outdoor SLAM and monitoring test.
+                        </figcaption>
+                      </figure>
+                    </div>
+                  </div>
+                </div>
+              </details>
             </div>
           </article>
 
-          <article class="project">
-            <img
-              src="assets/robot-032.jpg"
-              alt="YOLOv8 weed detection results for terrain-adaptive agriculture robot"
-            />
-            <div>
-              <h3>Terrain-Adaptive Autonomous Weed Removal Robot</h3>
-              <p>
-                <span class="label">Problem:</span> Improve agricultural weed
-                removal with a terrain-adaptive autonomous system.
-              </p>
-              <p>
-                <span class="label">Approach:</span> Worked on perception by
-                fine-tuning YOLOv8 on a Kaggle weed/crop dataset for object
-                detection and bounding-box based targeting.
-              </p>
-              <p>
-                <span class="label">My Contribution:</span> Perception pipeline,
-                model fine-tuning, and evaluation on test data.
-              </p>
-              <p>
-                <span class="label">Stack:</span> YOLOv8, dataset preparation,
-                detection evaluation.
-              </p>
-            </div>
-          </article>
         </div>
       </section>
 
@@ -235,25 +879,25 @@
           <div class="skills-grid">
             <div>
               <h3>Robotics</h3>
-              <p>ROS 2 Humble, RTAB-Map, Nav2, SLAM, VIO, exploration planning</p>
+              <p>ROS 2 Humble, RTAB-Map, Nav2, SLAM, VIO, exploration planning, multi-robot mapping</p>
             </div>
             <div>
               <h3>Perception</h3>
               <p>
                 RealSense depth + IMU integration, LiDAR processing,
-                occupancy/frontier mapping, YOLOv8 detection
+                occupancy/frontier mapping, ICP, loop closure workflows, YOLOv8 detection
               </p>
             </div>
             <div>
               <h3>Embedded and Systems</h3>
               <p>
                 Pixhawk, MAVLink, CAN, UART, Modbus, Jetson Orin Nano system
-                integration
+                integration, PX4 SITL, custom airframes
               </p>
             </div>
             <div>
               <h3>Simulation and Tools</h3>
-              <p>Gazebo, behavior trees, QGroundControl tuning workflow</p>
+              <p>Gazebo, FreeCAD, SDF, QGroundControl, behavior trees, GTSAM-based pose graph workflows</p>
             </div>
           </div>
         </div>
@@ -289,6 +933,111 @@
     </footer>
 
     <script>
+      const galleryCaptions = {
+        btp: {
+          "fig-002.jpg": "CAD view of an early morphing arm or support component.",
+          "fig-004.jpg": "CAD plate or structural body element used in the quadrotor concept.",
+          "fig-006.jpg": "Alternative CAD arm concept showing the evolving morphology idea.",
+          "fig-008.jpg": "Motor or actuator-side CAD component from the hardware design pipeline.",
+          "fig-010.jpg": "Initial simulated quadrotor model used while building the Gazebo-ready platform.",
+          "fig-012.jpg": "Top-view simulated model used during SDF and Gazebo validation.",
+          "fig-016.jpg": "Gazebo snapshot showing the vehicle during simulation validation.",
+          "fig-018.jpg": "Top-view simulated hover state used during Gazebo validation.",
+          "fig-026.jpg": "Geometry sketch showing the changing arm-angle representation.",
+          "fig-027.jpg": "Default morphology configuration in simulation.",
+          "fig-029.jpg": "X configuration in simulation.",
+          "fig-031.jpg": "T configuration in simulation.",
+          "fig-033.jpg": "O configuration in simulation.",
+          "fig-035.jpg": "Initial hardware prototype of the adaptive morphology quadrotor.",
+          "fig-036.jpg": "Electronics and system integration block diagram for the prototype.",
+          "fig-037.jpg": "Field or low-light prototype test image from the BTP archive."
+        },
+        swarm: {
+          "fig-000.jpg": "Point-cloud and mapping output from the single-robot or early Swarm-SLAM validation stage.",
+          "fig-001.jpg": "Simulation and visualization workspace used while setting up the Swarm-SLAM stack.",
+          "fig-002.jpg": "Two-robot Gazebo environment used for the collaborative mapping experiment.",
+          "fig-003.jpg": "Real-time inter-robot loop closure result showing aligned trajectories."
+        }
+      };
+
+      function buildGallery(targetId, folder, filenames) {
+        const root = document.getElementById(targetId);
+        if (!root) return;
+        const projectKey = targetId.startsWith("btp-") ? "btp" : "swarm";
+
+        filenames.forEach((filename) => {
+          const figure = document.createElement("figure");
+          figure.className = "figure-card";
+
+          const image = document.createElement("img");
+          image.src = `${folder}/${filename}`;
+          image.alt = galleryCaptions[projectKey][filename] || filename;
+          image.loading = "lazy";
+          if (filename === "fig-036.jpg") {
+            image.classList.add("figure-image-contain");
+          }
+
+          const caption = document.createElement("figcaption");
+          caption.textContent =
+            galleryCaptions[projectKey][filename] ||
+            `Project archive image: ${filename}`;
+
+          figure.appendChild(image);
+          figure.appendChild(caption);
+          root.appendChild(figure);
+        });
+      }
+
+      buildGallery("btp-cad-gallery", "assets/btp", [
+        "fig-002.jpg",
+        "fig-004.jpg",
+        "fig-006.jpg",
+        "fig-008.jpg"
+      ]);
+
+      buildGallery("btp-sdf-gallery", "assets/btp", [
+        "fig-010.jpg",
+        "fig-012.jpg",
+        "fig-016.jpg",
+        "fig-018.jpg"
+      ]);
+
+      buildGallery("btp-control-gallery", "assets/btp", ["fig-026.jpg"]);
+
+      buildGallery("btp-morph-gallery", "assets/btp", [
+        "fig-027.jpg",
+        "fig-029.jpg",
+        "fig-031.jpg",
+        "fig-033.jpg"
+      ]);
+
+      buildGallery("btp-hardware-gallery", "assets/btp", [
+        "fig-035.jpg",
+        "fig-036.jpg",
+        "fig-037.jpg"
+      ]);
+
+      buildGallery(
+        "swarm-gallery",
+        "assets/swarm",
+        Array.from({ length: 4 }, (_, index) => `fig-${String(index).padStart(3, "0")}.jpg`)
+      );
+
+      const projectList = document.querySelector("#projects .container");
+      const orderedProjectIds = [
+        "project-skybot-card",
+        "project-btp-card",
+        "project-rover-card",
+        "project-iisc-card"
+      ];
+
+      if (projectList) {
+        orderedProjectIds.forEach((id) => {
+          const card = document.getElementById(id);
+          if (card) projectList.appendChild(card);
+        });
+      }
+
       const year = document.getElementById("year");
       if (year) year.textContent = String(new Date().getFullYear());
 

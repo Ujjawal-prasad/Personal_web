@@ -234,9 +234,9 @@
                     <h4>Hardware Prototype</h4>
                     <p>
                       The project has also moved toward physical realization.
-                      These figures show the early hardware prototype and the
-                      system integration direction for the adaptive morphology
-                      platform.
+                      These figures show the early hardware prototype, newer
+                      hardware assembly progress, and the system integration
+                      direction for the adaptive morphology platform.
                     </p>
                     <figure class="featured-figure">
                       <img
@@ -244,6 +244,37 @@
                         alt="First 3D printed assembly for the morphing drone"
                       />
                       <figcaption>First 3D printed assembly for the morphing drone.</figcaption>
+                    </figure>
+                    <div class="figure-grid">
+                      <figure class="figure-card">
+                        <img
+                          src="assets/btp/hardware-assembly-01.jpeg"
+                          alt="Morphing quadrotor hardware assembly progress view"
+                        />
+                        <figcaption>Recent hardware assembly progress of the adaptive morphology quadrotor.</figcaption>
+                      </figure>
+                      <figure class="figure-card">
+                        <img
+                          src="assets/btp/hardware-assembly-02.jpeg"
+                          alt="Top-down view of the morphing quadrotor hardware assembly"
+                        />
+                        <figcaption>Top-down hardware view of the morphing quadrotor assembly.</figcaption>
+                      </figure>
+                    </div>
+                    <figure class="featured-figure">
+                      <div class="video-embed">
+                        <iframe
+                          src="https://www.youtube.com/embed/kGjDdAQ249g"
+                          title="Morphing quadrotor hardware demo video"
+                          loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          allowfullscreen
+                        ></iframe>
+                      </div>
+                      <figcaption>
+                        Hardware demo video of the adaptive morphology quadrotor assembly.
+                      </figcaption>
                     </figure>
                     <div class="figure-grid" id="btp-hardware-gallery"></div>
                   </div>
@@ -847,6 +878,17 @@ ros2 launch cslam_experiments cslam_lidar.launch.py namespace:=/r1 robot_id:=1 m
           <h2>My Robots</h2>
           <p>Click each image to reveal the project name.</p>
           <div class="robot-grid">
+            <article class="robot-card">
+              <button
+                class="robot-trigger"
+                type="button"
+                data-project="Adaptive Morphology Quadrotor"
+                data-target="project-btp"
+              >
+                <img src="assets/btp/hardware-assembly-02.jpeg" alt="Adaptive morphology quadrotor hardware" />
+              </button>
+              <p class="project-name" id="project-btp" aria-live="polite"></p>
+            </article>
             <article class="robot-card">
               <button
                 class="robot-trigger"
